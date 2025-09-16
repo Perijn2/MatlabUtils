@@ -1,11 +1,32 @@
-function [an, bn, a0] = FourierCoefficients(f_exp, n, omega, t, T)
-    % Wie dit leest is een neger
-    assume(n, "integer")
+function [an, bn, a0] = FourierCoefficients(f_exp, t, T)
+% [a_of, b_of, a0] = FourierCoefficients(f_exp, t, T)
+% f_exp : symbolic expression in t over [0, T]
+% t     : symbolic variable
+% T     : period (positive real)
+%
+% a_of(k) and b_of(k) are function handles returning a_k, b_k for integer k>=1
 
-    an = simplify(2/T * int(f_exp * cos(n * omega * t), t, [0, T]));
-    bn = simplify(2/T * int(f_exp * sin(n * omega * t), t, [0, T]));
+    arguments
+        f_exp sym
+        t sym
+        T (1,1) sym {mustBePositive}
+    end
+
+    syms n integer
     
-    a0 = simplify((2/T) * int(f_exp, t, [0, T]));
+    % Assumptions
+    assumeAlso(t, 'real'); %assumeAlso(T, 'real'); assumeAlso(T > 0);
 
-    assume(n,'clear')
+    omega = 2*pi/T;
+
+    an = simplify((2/T) * int(f_exp * cos(n*omega*t), t, 0, T));
+    bn = simplify((2/T) * int(f_exp * sin(n*omega*t), t, 0, T));
+    a0  = simplify((2/T) * int(f_exp, t, 0, T));
+
+    % Return coefficient evaluators a_of(k), b_of(k) for integer k
+    an = @(k) subs(an, n, k);
+    bn = @(k) subs(bn, n, k);
+
+    % Clean up assumptions on n only
+    assume(n, 'clear');
 end
