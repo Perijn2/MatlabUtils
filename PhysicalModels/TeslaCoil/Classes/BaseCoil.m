@@ -33,15 +33,6 @@ classdef (Abstract) BaseCoil < handle
             obj.material = getfield(params, 'material', struct());
         end
         
-        function M = mutualInductance(obj, other, alignment)
-            % Calculate mutual inductance using appropriate method
-            if nargin < 3, alignment = struct('type', 'coaxial'); end
-            M = calcMutualInductance(obj, other, alignment);
-        end
         
-        function k = couplingCoefficient(obj, other, alignment)
-            M = obj.mutualInductance(other, alignment);
-            k = M / sqrt(obj.inductance * other.inductance);
-        end
     end
 end
