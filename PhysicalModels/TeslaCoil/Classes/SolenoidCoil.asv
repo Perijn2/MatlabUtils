@@ -98,11 +98,10 @@ classdef SolenoidCoil < BaseCoil
             a = 8e-12; %  F/m
             b = 27e-12; % F/m
 
-            D = obj.geometry.radius * 2;
+            D = obj.geometry.radius*2;
             l = obj.geometry.wirediameter * obj.geometry.turns;
 
             C = ((4 * epsilon0 * l) / (pi)) * (1 + a*D/l + b*(D/l)^1.5);
-            obj.capacitance = C;
         end
 
         function [f, t] = parameterizeCurve(obj, n_points)
@@ -132,10 +131,10 @@ classdef SolenoidCoil < BaseCoil
                 error('Number of points must be at least 2');
             end
             
-            syms a N l r rho phi f t theta
+            syms a N l r rho phi f t direc
 
-            x = r * cos(theta * t + phi);
-            y = r * sin(theta * t + phi); 
+            x = r * cos(direc * t + phi);
+            y = r * sin(direc * t + phi); 
             z = rho * t / (2 * sym(pi));       % Linear height progression
 
             f(t) = [x, y, z];
